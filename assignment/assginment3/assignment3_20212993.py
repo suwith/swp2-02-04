@@ -50,6 +50,11 @@ def doScoreDB(scdb):
             for p in scdb:
                 if p['Name'] == parse[1]:
                     print("Age" + "=" + p['Age'] + " " + "Name" + "=" + p['Name'] + " " + "Score" + "=" + p['Score'])
+                    
+         elif parse[0] == 'inc':
+                for p in scdb:
+                    if p['Name'] == parse[1]:
+                        p['Score'] = str(int(p['Score']) + int(parse[2]))            
         else:
             print("Invalid command: " + parse[0])
 
