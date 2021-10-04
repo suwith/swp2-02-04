@@ -33,66 +33,42 @@ def doScoreDB(scdb):
         if inputstr == "": continue
         parse = inputstr.split(" ")
 
-        if parse[0] == 'add':
-            try:
+        try:
+            if parse[0] == 'add':
                 record = {'Name':parse[1], 'Age':parse[2], 'Score':parse[3]}
                 scdb += [record]
-            except:
-                print("Invalid order: please Enter it in order of name, age, and score.")
 
-        elif parse[0] == 'del':
-            try:
-                for p in scdb:
-                    for i in scdb:
-                        if p['Name'] == parse[1]:
-                            scdb.remove(p)
-                        break
-            except:
-                print("Invalid name: " + parse[1])
-            else:
-                print("Invalid name is none")
+            elif parse[0] == 'del':
+                for p in scdb[:]:
+                    if p['Name'] == parse[1]:
+                        scdb.remove(p)
 
-        elif parse[0] == 'show':
-            try:
+            elif parse[0] == 'show':
                 sortKey ='Name' if len(parse) == 1 else parse[1]
                 showScoreDB(scdb, sortKey)
-            except:
-                print("Invalid command: " + parse[1])
+
 
         # 주어진 name의 사람만 찾아서 출력
-        elif parse[0] == 'find':
-            try:
-                for p in scdb:
-                    for j in scdb:
-                        if p['Name'] == parse[1]:
-                            for attr in sorted(p):
-                                print(attr + "=" + p[attr], end=' ')
-                            print()
-                        else: print("name is none")
-                        break
-            except:
-                print("name is none")
-            else:
-                print("Invalid name: " + parse[1])
+            elif parse[0] == 'find':
+                for p in scdb[:]:
+                    if p['Name'] == parse[1]:
+                        for attr in sorted(p):
+                            print(attr + "=" + p[attr], end=' ')
+                        print()
+
 
         # 주어진 name의 사람만 찾아서 score를 amount만큼 더해줌
-        elif parse[0] == 'inc':
-            try:
-                for p in scdb:
-                    for i in scdb:
-                        if p['Name'] == parse[1]:
-                            amount = parse[2]
-                            p['Score'] = str(int(p['Score']) + int(amount))
-                        break
-            except:
-                print("name or amount is none")
+            elif parse[0] == 'inc':
+                for p in scdb[:]:
+                    if p['Name'] == parse[1]:
+                        amount = parse[2]
+                        p['Score'] = str(int(p['Score']) + int(amount))
+                    break
+            elif parse[0] == 'quit':
+                break
             else:
-                print("Invalid name : " + parse[1])
-        elif parse[0] == 'quit':
-            break
-        else:
-            print("Invalid command: " + parse[0])
-
+                print("Invalid command: " + parse[0])
+        except : print("Invalid value")
 
 def showScoreDB(scdb, keyname):
     for p in sorted(scdb, key=lambda person: person[keyname]):
