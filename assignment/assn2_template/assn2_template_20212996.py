@@ -11,7 +11,7 @@ def seqsearch(nbrs, target):
 #이진탐색 재귀함수로 구현하기(과제)
 def recbinsearch(L, l, u, target):
     #L:탐색대상 리스트 l: lower u: upper target: key
-    if(l<u):
+    if(l<=u):
         m = int((l + u) // 2)
         if L[m] == target:
             return m
@@ -40,7 +40,6 @@ ts = time.time()
 
 # binary search - recursive
 cnt = 0
-idx = -1
 for target in targets:
     idx = recbinsearch(numbers, 0, len(numbers), target)
     if idx == -1:
