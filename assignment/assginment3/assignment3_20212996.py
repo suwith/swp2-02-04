@@ -63,7 +63,6 @@ def doScoreDB(scdb):
                     if p['Name'] == parse[1]:
                         amount = parse[2]
                         p['Score'] = str(int(p['Score']) + int(amount))
-                    break
             elif parse[0] == 'quit':
                 break
             else:
