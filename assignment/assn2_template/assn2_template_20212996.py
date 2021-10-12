@@ -12,7 +12,7 @@ def seqsearch(nbrs, target):
 def recbinsearch(L, l, u, target):
     #L:탐색대상 리스트 l: lower u: upper target: key
     if(l<=u):
-        m = int((l + u) // 2)
+        m = (l + u) // 2
         if L[m] == target:
             return m
         elif L[m] < target:
