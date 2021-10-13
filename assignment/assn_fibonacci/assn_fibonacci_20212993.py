@@ -1,7 +1,7 @@
 import time
 
 #반복
-def Interfibo(n):
+def interfibo(n):
     a, b = 0, 1
     for i in range(n - 1):
         a, b = b, a + b
@@ -19,9 +19,9 @@ while True:
         break
 
     ts = time.time()
-    fibonumber = Interfibo(nbr)
+    fibonumber = interfibo(nbr)
     ts = time.time() - ts
-    print("InterFibo(%d) = %d, time %.6f" % (nbr, fibonumber, ts)
+    print("InterFibo(%d) = %d, time %.6f" % (nbr, fibonumber, ts))
     ts = time.time()
     fibonumber = fibo(nbr)
     ts = time.time() - ts
