@@ -11,15 +11,16 @@ def seqsearch(nbrs, target):
 #이진탐색 재귀함수로 구현하기(과제)
 def recbinsearch(L, l, u, target):
     #L:탐색대상 리스트 l: lower u: upper target: key
-    if(l<=u):
-        m = (l + u) // 2
-        if L[m] == target:
+    if(l>u):
+        return -1
+    m = (l + u) // 2
+    if L[m] == target:
             return m
-        elif L[m] < target:
+    elif L[m] < target:
             return recbinsearch(L, m+1, u, target)
-        else:
+    else:
             return recbinsearch(L, l, m-1, target)
-    else: return -1
+  
 
 #탐색대상 리스트 랜덤 생성
 numofnbrs = int(input("Enter a number: "))
