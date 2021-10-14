@@ -2,9 +2,7 @@ import time
 
 #반복적 피보나치
 def iterfibo(n):
-    lst = []
-    lst.insert(0,0)
-    lst.insert(1,1)
+    lst = [0, 1]
     for i in range(1, n):
         lst.insert(i+1, lst[i-1] + lst[i])
     return lst[n]
