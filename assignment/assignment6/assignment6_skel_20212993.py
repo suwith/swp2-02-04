@@ -93,7 +93,19 @@ class ScoreDB(QWidget):
             
 
         def readScoreDB(self):
-            
+            try:
+            fH = open(self.dbfilename, 'rb')
+        except FileNotFoundError as e:
+            self.scoredb = []
+            return
+
+        try:
+            self.scoredb = pickle.load(fH)
+        except:
+            pass
+        else:
+            pass
+        fH.close()
 
 
         def writeScoreDB(self):
