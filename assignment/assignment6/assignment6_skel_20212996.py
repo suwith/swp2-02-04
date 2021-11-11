@@ -24,54 +24,62 @@ class ScoreDB(QWidget):
         key = QLabel('Key:')
         result = QLabel('Result:')
 
-        nameEdit = QLineEdit()
-        ageEdit = QLineEdit()
-        scoreEdit = QLineEdit()
-        amountEdit = QLineEdit()
-        keyEdit = QComboBox()
-        keyEdit.addItem("Name")
-        keyEdit.addItem("Age")
-        keyEdit.addItem("Score")
+        self.nameEdit = QLineEdit(self)
+        self.ageEdit = QLineEdit(self)
+        self.scoreEdit = QLineEdit(self)
+        self.amountEdit = QLineEdit(self)
 
-        addButton = QPushButton("Add")
-        delButton = QPushButton("Del")
-        findButton = QPushButton("Find")
-        incButton = QPushButton("Inc")
-        showButton = QPushButton("Show")
+        self.keyEdit = QComboBox(self)
+        self.keyEdit.addItem("Name")
+        self.keyEdit.addItem("Age")
+        self.keyEdit.addItem("Score")
 
-        resultView = QTextEdit()
+        self.addButton = QPushButton("Add")
+        self.delButton = QPushButton("Del")
+        self.findButton = QPushButton("Find")
+        self.incButton = QPushButton("Inc")
+        self.showButton = QPushButton("Show")
+
+        self.addButton.clicked.connect(self.clickAdd)
+        self.delButton.clicked.connect(self.clickDel)
+        self.findButton.clicked.connect(self.clickFind)
+        self.incButton.clicked.connect(self.clickInc)
+        self.showButton.clicked.connect(self.clickShow)
+
+        self.resultView = QTextEdit(self)
+        self.resultView.setAcceptRichText(False)
 
         hbox = QHBoxLayout()
         vbox = QVBoxLayout()
 
         hbox.addStretch(1)
         hbox.addWidget(name)
-        hbox.addWidget(nameEdit)
+        hbox.addWidget(self.nameEdit)
         hbox.addWidget(age)
-        hbox.addWidget(ageEdit)
+        hbox.addWidget(self.ageEdit)
         hbox.addWidget(score)
-        hbox.addWidget(scoreEdit)
+        hbox.addWidget(self.scoreEdit)
 
         hbox2 = QHBoxLayout()
         hbox2.addStretch(1)
         hbox2.addWidget(amount)
-        hbox2.addWidget(amountEdit)
+        hbox2.addWidget(self.amountEdit)
         hbox2.addWidget(key)
-        hbox2.addWidget(keyEdit)
+        hbox2.addWidget(self.keyEdit)
 
         hbox3 = QHBoxLayout()
         hbox3.addStretch(1)
-        hbox3.addWidget(addButton)
-        hbox3.addWidget(delButton)
-        hbox3.addWidget(findButton)
-        hbox3.addWidget(incButton)
-        hbox3.addWidget(showButton)
+        hbox3.addWidget(self.addButton)
+        hbox3.addWidget(self.delButton)
+        hbox3.addWidget(self.findButton)
+        hbox3.addWidget(self.incButton)
+        hbox3.addWidget(self.showButton)
 
         hbox4 = QHBoxLayout()
         hbox4.addWidget(result)
 
         hbox5 = QHBoxLayout()
-        hbox5.addWidget(resultView)
+        hbox5.addWidget(self.resultView)
 
         vbox.addLayout(hbox)  # 세로레이아웃에 가로 레이아웃더하기
         vbox.addLayout(hbox2)
@@ -95,12 +103,54 @@ class ScoreDB(QWidget):
             return
 
         try:
-            self.scoredb =  pickle.load(fH)
+            self.scoredb = pickle.load(fH)
         except:
             pass
         else:
             pass
         fH.close()
+
+    #event
+    def clickAdd(self):
+        name = self.nameEdit.text()
+        age = self.ageEdit.text()
+        score = self.scoreEdit.text()
+        record = {'Name': name, 'Age': age, 'Score': score}
+        self.scoredb += [record]
+        self.showScoreDB()
+
+    def clickDel(self):
+        self.resultView.clear()
+        name = self.NameEdit.text()
+        for p in self.scoredb:
+            if p['Name'] == name:
+                self.scoredb.remove(p)
+        self.showScoreDB()
+
+    def clickFind(self):
+        sender = self.sender()
+        self.resultView.clear()
+        name = self.NameEdit.text()
+        for p in self.scoredb:
+            if p['Name'] == name:
+                result = ""
+                for attr in sorted(p):
+                    result += attr + " = " + str(p[attr]) + '   '
+                self.resultView.append(result)
+
+
+    def clickInc(self):
+        sender = self.sender()
+        name = self.NameEdit.text()
+        amount = self.amountEdit.text()
+        for p in self.scoredb:
+            if p['Name'] == name:
+                p['Score'] = str(int(p['Score']) + int(amount))
+        self.showScoreDB()
+
+    def clickShow(self):
+        sender = self.sender()
+        self.showScoreDB()
 
 
     # write the data into person db
@@ -110,7 +160,13 @@ class ScoreDB(QWidget):
         fH.close()
 
     def showScoreDB(self):
-        pass
+        self.resultView.clear()
+        keyname = self.keyEdit.currentText()
+        for p in sorted(self.scoredb, key=lambda person: person[keyname]):
+            resultList=""
+            for attr in sorted(p):
+                resultList += (attr + " = " + str(p[attr])+"   ")
+            self.resultView.append(resultList)
 
 
 if __name__ == '__main__':    
