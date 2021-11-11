@@ -41,7 +41,7 @@ class ScoreDB(QWidget):
         self.showButton = QPushButton("Show")
 
         self.addButton.clicked.connect(self.clickAdd)
-        self.delButton.clicked.connect(self.clickDel)
+        #self.delButton.clicked.connect(self.clickDel)
         self.findButton.clicked.connect(self.clickFind)
         self.incButton.clicked.connect(self.clickInc)
         self.showButton.clicked.connect(self.clickShow)
@@ -119,13 +119,13 @@ class ScoreDB(QWidget):
         self.scoredb += [record]
         self.showScoreDB()
 
-    def clickDel(self):
-        self.resultView.clear()
-        name = self.NameEdit.text()
-        for p in self.scoredb:
-            if p['Name'] == name:
-                self.scoredb.remove(p)
-        self.showScoreDB()
+    #def clickDel(self):
+        #self.resultView.clear()
+        #name = self.NameEdit.text()
+        #for p in self.scoredb:
+            #if p['Name'] == name:
+                #self.scoredb.remove(p)
+        #self.showScoreDB()
 
     def clickFind(self):
         sender = self.sender()
