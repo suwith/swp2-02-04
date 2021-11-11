@@ -109,6 +109,9 @@ class ScoreDB(QWidget):
 
 
         def writeScoreDB(self):
+            fH = open(self.dbfilename, 'wb')
+        pickle.dump(self.scoredb, fH)
+        fH.close()
             
         def showScoreDB(self):
             
