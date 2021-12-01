@@ -2,9 +2,8 @@ import pickle
 import sys
 from PyQt5.QtWidgets import (QWidget, QPushButton,
     QHBoxLayout, QVBoxLayout, QApplication, QLabel,
-    QComboBox, QTextEdit, QLineEdit)
+    QComboBox, QTextEdit, QLineEdit, QErrorMessage)
 from PyQt5.QtCore import Qt
-
 
 class ScoreDB(QWidget):
 
@@ -21,50 +20,34 @@ class ScoreDB(QWidget):
         self.setWindowTitle('Assignment6')
 
         #레이블, 입력
-        lbl1 = QLabel("Name:", self)
-        lbl1.move(10, 5)
+        label = ["Name:", "Age:", "Score:", "Amount:", "Keys:"]
+        l1 = [[10, 5], [170, 5], [320, 5], [200, 40], [370, 40]]
+        for i in range(5):
+            lbl = QLabel(label[i], self)
+            lbl.move(l1[i][0], l1[i][1])
         self.NameEdit = QLineEdit(self)
         self.NameEdit.move(60, 5)
-        lbl2 = QLabel("Age:", self)
-        lbl2.move(170, 5)
         self.AgeEdit = QLineEdit(self)
         self.AgeEdit.move(210, 5)
-        lbl3 = QLabel("Score:", self)
-        lbl3.move(320, 5)
         self.ScoreEdit = QLineEdit(self)
         self.ScoreEdit.move(370, 5)
-        lbl4 = QLabel("Amount:", self)
-        lbl4.move(200, 40)
         self.AmountEdit = QLineEdit(self)
         self.AmountEdit.move(260, 40)
-        lbl5 = QLabel("Keys:", self)
-        lbl5.move(370, 40)
 
-        #버튼 구현
-        self.addButton = QPushButton("Add", self)
-        self.delButton = QPushButton("Del", self)
-        self.findButton = QPushButton("Find", self)
-        self.incButton = QPushButton("Inc", self)
-        self.showButton = QPushButton("show", self)
+        #버튼 구현력, # 이벤트 발신
         hbox = QHBoxLayout()
         hbox.addStretch(1)
-        hbox.addWidget(self.addButton)
-        hbox.addWidget(self.delButton)
-        hbox.addWidget(self.findButton)
-        hbox.addWidget(self.incButton)
-        hbox.addWidget(self.showButton)
+
+        bt = ["Add", "Del", "Find", "Inc", "show"]
+        for i in range(5):
+            self.button = QPushButton(bt[i], self)
+            hbox.addWidget(self.button)
+            self.button.clicked.connect(self.buttonClicked)
         vbox = QVBoxLayout()
         vbox.addStretch(100)
         vbox.addLayout(hbox)
         vbox.addStretch(200)
         self.setLayout(vbox)
-
-        # 이벤트 발신
-        self.addButton.clicked.connect(self.addClicked)
-        self.delButton.clicked.connect(self.delClicked)
-        self.findButton.clicked.connect(self.findClicked)
-        self.incButton.clicked.connect(self.incClicked)
-        self.showButton.clicked.connect(self.showClicked)
 
         #결과창
         lbl6 = QLabel("Result:", self)
@@ -72,7 +55,7 @@ class ScoreDB(QWidget):
         self.result = QTextEdit(self)
         self.result.setAcceptRichText(False)
         self.result.resize(480, 115)
-        self.result.move(10,130)
+        self.result.move(10, 130)
 
         #콤보상자
         self.combo = QComboBox(self)
@@ -81,11 +64,99 @@ class ScoreDB(QWidget):
         self.combo.addItem("Score")
         self.combo.resize(80, 30)
         self.combo.move(410, 40)
-
         self.show()
+         #에러 메시지
+        self.error = QErrorMessage()
 
     def closeEvent(self, event):
         self.writeScoreDB()
+
+    def buttonClicked(self):
+        sender = self.sender()
+        try:
+            if sender.text() == "Add":
+                name = self.NameEdit.text()
+                age = self.AgeEdit.text()
+                score = self.ScoreEdit.text()
+                if len(name) == 0:
+                    m = "input name"
+                    self.error.showMessage(m)
+                    raise Exception(m)
+                if name.isdigit():
+                    m = "input name in String from"
+                    self.error.showMessage(m)
+                    raise Exception(m)
+                if len(age) == 0:
+                    m = "input age"
+                    self.error.showMessage(m)
+                    raise Exception(m)
+                if len(score) == 0:
+                    m = "input score"
+                    self.error.showMessage(m)
+                    raise Exception(m)
+                if not age.isdigit():
+                    m = 'input age in integer form'
+                    self.error.showMessage(m)
+                    raise Exception(m)
+                if not score.isdigit():
+                    m = 'input score in integer form'
+                    self.error.showMessage(m)
+                    raise Exception(m)
+                record = {'Name': name, 'Age': age, 'Score': score}
+                self.scoredb += [record]
+                self.showScoreDB()
+
+            elif sender.text() == "Del":
+                name = self.NameEdit.text()
+                if len(name) == 0:
+                    m = "input name"
+                    self.error.showMessage(m)
+                    raise Exception(m)
+                a = []
+                for p in self.scoredb:
+                    if p['Name'] == name:
+                        b = self.scoredb.index(p)
+                        a.append(b)
+                a.sort(reverse=True)
+                for i in a:
+                    self.scoredb.pop(i)
+                self.showScoreDB()
+            elif sender.text() == "Find":
+                self.result.clear()
+                name = self.NameEdit.text()
+                if len(name) == 0:
+                    m = "input name"
+                    self.error.showMessage(m)
+                    raise Exception(m)
+                for p in self.scoredb:
+                    if p['Name'] == name:
+                        out = ""
+                        for attr in sorted(p):
+                            out += attr + " = " + str(p[attr]) + "     "
+                        self.result.append(out)
+            elif sender.text() == "Inc":
+                name = self.NameEdit.text()
+                amount = self.AmountEdit.text()
+                if len(name) == 0:
+                    m = "input name"
+                    self.error.showMessage(m)
+                    raise Exception(m)
+                if len(amount) == 0:
+                    m = "input amount"
+                    self.error.showMessage(m)
+                    raise Exception(m)
+                if not amount.isdigit():
+                    m = 'input amount in integer form'
+                    self.error.showMessage(m)
+                    raise Exception(m)
+                for p in self.scoredb:
+                    if p['Name'] == name:
+                        p['Score'] = str(int(p['Score']) + int(amount))
+                self.showScoreDB()
+            elif sender.text() == "show":
+                self.showScoreDB()
+        except Exception as e:
+            print("[error]", e)
 
     def readScoreDB(self):
         try:
@@ -117,56 +188,7 @@ class ScoreDB(QWidget):
         pickle.dump(self.scoredb, fH)
         fH.close()
 
-    #이벤트 구현
-    def addClicked(self):
-        sender = self.sender()
-        name = self.NameEdit.text()
-        age = self.AgeEdit.text()
-        score = self.ScoreEdit.text()
-        record = {'Name': name, 'Age': age, 'Score': score}
-        self.scoredb += [record]
-        self.showScoreDB()
-
-    def delClicked(self):
-        sender = self.sender()
-        name = self.NameEdit.text()
-        a = []
-        for p in self.scoredb:
-            if p['Name'] == name:
-                b = self.scoredb.index(p)
-                a.append(b)
-        a.sort(reverse=True)
-        for i in a:
-            self.scoredb.pop(i)
-        self.showScoreDB()
-
-    def findClicked(self):
-        sender = self.sender()
-        self.result.clear()
-        name = self.NameEdit.text()
-        for p in self.scoredb:
-            if p['Name'] == name:
-                out = ""
-                for attr in sorted(p):
-                    out += attr + " = " + str(p[attr]) + "     "
-                self.result.append(out)
-
-
-    def incClicked(self):
-        sender = self.sender()
-        name = self.NameEdit.text()
-        amount = self.AmountEdit.text()
-        for p in self.scoredb:
-            if p['Name'] == name:
-                p['Score'] = str(int(p['Score']) + int(amount))
-        self.showScoreDB()
-
-    def showClicked(self):
-        sender = self.sender()
-        self.showScoreDB()
-
-
-if __name__ == '__main__':    
+if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = ScoreDB()
     sys.exit(app.exec_())
