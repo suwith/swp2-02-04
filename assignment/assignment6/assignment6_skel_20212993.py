@@ -89,41 +89,68 @@ class ScoreDB(QWidget):
         self.setWindowTitle('Assignment6')
         self.show()
 
-        def closeEvent(self, event):
-            
+    
 
-        def readScoreDB(self):
-            try:
-            fH = open(self.dbfilename, 'rb')
-        except FileNotFoundError as e:
-            self.scoredb = []
-            return
+    def showScoreDB(self):
+        keyname = self.KeyBox.currentText()
+        kn = []
+        for p in sorted(self.scoredb, key=lambda person: person[keyname]):
+            for attr in sorted(p):
+                kn.append(str(attr) + " = " + str(p[attr]))
+                kn.append("                    ")
+            kn.append("\n")
+        self.ResultText.setText(''.join(kn))
 
-        try:
-            self.scoredb = pickle.load(fH)
-        except:
-            pass
-        else:
-            pass
-        fH.close()
+    def addButten(self):
+        name = self.NameEdit.text()
+        age = self.AgeEdit.text()
+        score = self.ScoreEdit.text()
+        self.scoredb.append({'Name': name, 'Age': int(age), 'Score': int(score)})
+        self.showScoreDB()
 
+    def delButten(self):
+        name = self.NameEdit.text()
+        a = 0
+        for i in self.scoredb:
+            if name == i['Name']:
+                a += 1
+        for k in range(a):
+            for i in self.scoredb:
+                if name == i['Name']:
+                    self.scoredb.remove(i)
+                    continue
+        self.showScoreDB()
 
-        def writeScoreDB(self):
-            fH = open(self.dbfilename, 'wb')
+    def incButten(self):
+        name = self.NameEdit.text()
+        amount = self.AmountEdit.text()
+        for p in self.scoredb:
+            if p['Name'] == name:
+                p['Score'] = int(p['Score']) + int(amount)
+                p['Score'] = str(p['Score'])
+        self.showScoreDB()
+
+    def findButten(self):
+        name = self.NameEdit.text()
+        keyname = self.KeyBox.currentText()
+        kn = []
+        for p in sorted(self.scoredb, key=lambda person: person[keyname]):
+            if name == p['Name']:
+                for attr in sorted(p):
+                    kn.append(str(attr) + " = " + str(p[attr]))
+                    kn.append("                    ")
+                kn.append("\n")
+        self.ResultText.setText(''.join(kn))
+        
+    def writeScoreDB(self):
+        fH = open(self.dbfilename, 'wb')
         pickle.dump(self.scoredb, fH)
-        fH.close()
-            
-        def showScoreDB(self):
-            
+        fH.close()  
 
-        def addButten(self):
-            
 
-        def delButten(self):
-            
 
-        def incButten(self):
-            
-
-        def findButten(self):
+if __name__ == '__main__':    
+    app = QApplication(sys.argv)
+    ex = ScoreDB()
+    sys.exit(app.exec_())
             
